@@ -2,7 +2,7 @@
 
 "Recommend System Experiment"     Author：荀镕基 1819660230    2021.11.25
 
-![movielens_predict_result](.\docs\movielens_predict_result.jpg)
+![movielens_predict_result](docs\movielens_predict_result.jpg)
 
 ---
 
@@ -125,7 +125,7 @@ print(ratings.index,'\n',ratings.columns)#行列索引
 
 **（2）分割 train, test set**
 
-### 2.余弦相似度
+
 
 
 
