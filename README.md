@@ -111,23 +111,13 @@
 
 ---
 
-## 实验过程记录
+## 实验结果
 
-### 1.数据预处理
-**（1）使用 `pandas.read_csv()`读取数据**
+1.MAE result
+![MAE_result_PearsonCosineAvg_UserBaseCF](docs/MAE_result_PearsonCosineAvg_UserBaseCF.png)
 
-```python
-#1）读取评分数据: columns=[userId  movieId  rating  timestamp]
-ratings=pd.read_csv("ratings.csv") #读入为<class 'pandas.core.frame.DataFrame'>
-print(ratings.head(5)) #查看开头5行数据
-print(ratings.index,'\n',ratings.columns)#行列索引
-```
-
-**（2）分割 train, test set**
-
-
-
-
+2.UserId=1 ’s recommended list
+![User1_RecommendList](docs/User1_RecommendList.jpg)
 
 
 
@@ -163,3 +153,18 @@ items=pd.read_csv("movies.csv",sep=',',encoding="GBK")
 
 
 - 注：test 每次计算一次相似性太慢》》csv 文件数据删掉一点
+
+
+
+### 2.数据预处理
+
+**（1）使用 `pandas.read_csv()`读取数据**
+
+```python
+#1）读取评分数据: columns=[userId  movieId  rating  timestamp]
+ratings=pd.read_csv("ratings.csv") #读入为<class 'pandas.core.frame.DataFrame'>
+print(ratings.head(5)) #查看开头5行数据
+print(ratings.index,'\n',ratings.columns)#行列索引
+```
+
+**（2）分割 train, test set**
