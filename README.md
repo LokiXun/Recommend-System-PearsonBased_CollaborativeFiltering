@@ -2,7 +2,7 @@
 
 "Recommend System Experiment"     Author：荀镕基 1819660230    2021.11.25
 
-![movielens_predict_result](docs\movielens_predict_result.jpg)
+![movielens_predict_result](docs/movielens_predict_result.jpg)
 
 ---
 
