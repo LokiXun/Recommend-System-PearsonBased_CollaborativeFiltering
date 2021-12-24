@@ -20,9 +20,9 @@
 
 - **Step 1：Data Preprocessing**
   
-  1. 读入数据：评分数据 ratings、电影数据 item（物品）
+  1. 读入数据：评分数据 ratings、电影数据 items（物品）
   
-     - 从评分数据中，提取出用户 id，存入 user 集合
+     - 从评分数据中，提取用户 id，存入 user 集合；movieid 存入 movies
   
   2. 切块分组 （K-fold 交叉验证）
   
@@ -117,9 +117,21 @@
 ![MAE_result_PearsonCosineAvg_UserBaseCF](docs/MAE_result_PearsonCosineAvg_UserBaseCF.png)
 
 2.UserId=1 ’s recommended list
+
+**（1）确定算法后，实际应用时给出的推荐列表**
+使用 DB 所有数据作为训练数据，在该用户没看过的电影范围内，预测评分、推荐。
+
 ![User1_RecommendList](docs/User1_RecommendList.jpg)
 
+（2）评价算法阶段：分割了 train-test 集合，在 test 集合中物品为范围进行推荐（有真实评分，可以使用 HLU 等排序指标，评价算法的好坏）
 
+---
+
+## 实验原理
+
+
+
+## 实验过程记录
 
 ---
 
@@ -168,3 +180,11 @@ print(ratings.index,'\n',ratings.columns)#行列索引
 ```
 
 **（2）分割 train, test set**
+
+
+
+
+
+## License
+
+This project is licensed under the MIT license (MIT)
