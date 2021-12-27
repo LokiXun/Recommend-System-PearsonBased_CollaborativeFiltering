@@ -90,20 +90,60 @@
   1. 实现评价指标
 
      > 1. MAE、RMSE
+     > 1. ROC曲线、PR曲线
+     > 1. 排序指标：NDCG、HLU
+     > 1. 多样性指标：Diversity
 
-  2. 绘制对应曲线
+  2. 在不同邻居数量下测试，绘制对应曲线
 
   3. 比较不同算法的结果
 
-     - 余弦相似度
+     - Cosine 余弦相似度
      - Pearson相似度
-     - 基于物品 / 用户
+     - Average_Predict 
+     - Discount_factor Pearson
 
   
 
-- **Step5：给出某一用户 user 的推荐列表**
+- **Step5：输入用户Id，给出推荐列表**
 
-  > 1. 
+  > - 使用 DB 全部数据训练，在其余未看过的电影范围内推荐
+  >
+  >   > 所有这个用户的预测结果（邻居数量最优的情况下），以预测评分排序(降序)
+  >
+  > 物品名(电影名) 整体样本平均评分 评分人数 预测评分 真实评分
+  > 物品名(电影名) 整体样本平均评分 评分人数 预测评分 真实评分
+  > 物品名(电影名) 整体样本平均评分 评分人数 预测评分 真实评分
+  >
+  > 1. 先考虑将所有数据作为训练集
+  > 2. 找出未评分的物品
+  > 3. 预测
+
+```flow
+st=>start: 输入用户Id
+cond_1=>condition: 有无相似用户？
+cond_2=>condition: 看过全部电影？
+cond_3=>condition: sifted neighbors num is 0?
+end_1=>end: 给出流行性推荐列表（评分人数高的电影）
+
+op_2=>operation: 对每个未看电影预测评分
+cond_pred=>condition: 有邻居看过这个电影？
+op_pred_1=>operation: 评分均值
+op_pred_2=>operation: 预测公式
+op_pred_func=>subroutine: 按预测分值从大到小排序，选择N个推荐
+end_2=>end: 给出长度=N 的推荐列表
+
+
+st->cond_1
+cond_1(yes)->end_1
+cond_1(no)->cond_2
+cond_2(yes)->end_1
+cond_2(no)->op_2->cond_pred
+cond_pred(no)->op_pred_1->op_pred_func
+cond_pred(yes)->op_pred_2->op_pred_func
+op_pred_func->end_2
+
+```
 
 
 
@@ -111,25 +151,33 @@
 
 ## 实验结果
 
-1.MAE result
-![MAE_result_PearsonCosineAvg_UserBaseCF](docs/MAE_result_PearsonCosineAvg_UserBaseCF.png)
+**（1）比较不同CF算法下的MAE、RMSE指标**
 
-2.UserId=1 ’s recommended list
+![不同CF算法下的MAE、RMSE曲线](docs/MAE_metrics_comparision.png)
 
-**（1）确定算法后，实际应用时给出的推荐列表**
-使用 DB 所有数据作为训练数据，在该用户没看过的电影范围内，预测评分、推荐。
+- 分析： MAE、RMSE曲线在邻居数量=20后开始趋于稳定。1）邻居数量>=15时，Pearson CF算法的MAE、RMSE指标均低于Cosine余弦相似度的CF算法。2）对于Pearson 改进算法，当DiscountFactor=50时，Pearson CF算法的RMSE、MAE进一步降低到0.672，体现在计算Pearson 相似度时，增加折扣因子，降低共同物品数较低的用户对，其相似度对结果的权值，提升了模型预测效果。
 
-![User1_RecommendList](docs/User1_RecommendList.jpg)
+**（2）NDCG、HLU、Diversity指标**
 
-（2）评价算法阶段：分割了 train-test 集合，在 test 集合中物品为范围进行推荐（有真实评分，可以使用 HLU 等排序指标，评价算法的好坏）
+![不同CF算法下的NDCG、HLU、Diversity指标](docs/NDCG_HLU_Diversity_metrics_result.png)
 
----
+- 分析：
 
-## 实验原理
+1. 在邻居数=[5，60]时，DiscountFactor=50 的Pearson CF算法，NDCG、HLU排序指标值相较于普通Pearson CF算法更好，因此折扣因子的改进提升了推荐列表的质量。
+
+2. 对于推荐列表内容的多样性Diversity，DiscountFactor=50 的Pearson CF算法，比普通Pearson CF算法更差，体现了在进一步提升了预测准确性，会带来的多样性的减少。
+
+**（3）输入用户id，给出推荐列表**
+
+1. 新用户或没有邻居的用户：给出流行度推荐（评分人数最多）
+   ![RecommendList_popular_items](docs/RecommendList_popular_items.jpg)
+
+2. 有邻居的用户：按预测评分从大到小选取 10 个
+   ![RecommendList_User1](docs/RecommendList_User1.jpg)
 
 
 
-## 实验过程记录
+
 
 ---
 
